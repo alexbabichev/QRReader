@@ -10,18 +10,18 @@
 import QRReader from 'QRReader';
 
 // init
-const qRreader = new QRReader();
-const el = document.getElementById('videoCapture');
+const qrCodeReader = new QRReader();
+const videoElement = document.getElementById('video');
 
 // start Capture
 start() {
-  qr.startCapture(el)
+  qrCodeReader.startCapture(videoElement)
     .then(console.log)
     .catch(console.log);
 }
 
 // cancel Capture
 onCancelClick() {
-  qr.stopCapture();
+  qrCodeReader.stopCapture();
 }
 ```
