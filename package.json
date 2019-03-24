@@ -1,0 +1,29 @@
+{
+  "name": "qrreader",
+  "version": "1.0.1",
+  "description": "library for reading QR codes from the webcam ",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "lint": "tslint --project \"./tsconfig.json\"",
+    "test": "echo \\”Error: no test specified\\” && exit 1"
+  },
+  "keywords": [
+    "qr",
+    "reader",
+    "typescript",
+    "qrscaner"
+  ],
+  "author": "Alex Babichev",
+  "license": "MIT",
+  "bundleDependencies": false,
+  "devDependencies": {
+    "@types/node": "^11.11.6",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.4000"
+  },
+  "dependencies": {
+    "jsqr": "^1.2.0"
+  }
+}
