@@ -16,6 +16,14 @@
     "qrscaner"
   ],
   "author": "Alex Babichev",
+  "homepage": "https://github.com/alexbabichev/QRReader#readme",
+  "bugs": {
+    "url": "https://github.com/alexbabichev/QRReader/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexbabichev/QRReader.git"
+  },
   "license": "MIT",
   "bundleDependencies": false,
   "devDependencies": {
