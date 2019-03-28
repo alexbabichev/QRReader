@@ -15,17 +15,23 @@ class QRReader {
   private ctx: CanvasRenderingContext2D | null;
   private constraints: MediaStreamConstraints = { audio: false, video: true };
   private mediaStream: MediaStream | null = null;
-  private iOS = ['iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) >= 0;
+  private videoInputDevices: MediaDeviceInfo[] = [];
+  private facingMode: 'environment' | 'user' | 'left' | 'right' = 'user';
 
   public isMediaStreamAPISupported = navigator && navigator.mediaDevices && 'enumerateDevices' in navigator.mediaDevices;
 
   constructor() {
+    this.facingMode = this.isMobileDevice() ? 'environment' : 'user';
     this.setConstraints();
 
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
 
     this.setCanvasProperties(this.canvas);
+  }
+
+  private isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
   }
 
   private setCanvasProperties(canvas: HTMLCanvasElement): void {
@@ -39,7 +45,7 @@ class QRReader {
         if (device)
           this.constraints.video = {
             deviceId: device.deviceId,
-            facingMode: this.iOS ? 'environment' : undefined
+            facingMode: this.facingMode
           }
       });
   }
@@ -54,11 +60,11 @@ class QRReader {
     return navigator.mediaDevices
       .enumerateDevices()
       .then((devices: MediaDeviceInfo[]) => {
-        const videoInputDevices = devices
+        this.videoInputDevices = devices
           .filter((device: MediaDeviceInfo) => {
             return device.kind === 'videoinput';
           });
-        return videoInputDevices[0];
+        return this.videoInputDevices[0];
       });
   }
 
@@ -113,6 +119,12 @@ class QRReader {
     }
 
     return this.asyncScan(video);
+  }
+
+  public stopAndSwitchCamera() {
+    this.stopCapture();
+    this.facingMode = (this.facingMode === 'environment') ? 'user' : 'environment';
+    this.setConstraints();
   }
 
   public stopCapture(): void {

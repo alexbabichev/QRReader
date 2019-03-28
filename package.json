@@ -1,6 +1,6 @@
 {
   "name": "qrreader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "library for reading QR codes from the webcam ",
   "main": "dist/index.js",
   "scripts": {
