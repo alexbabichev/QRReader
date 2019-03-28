@@ -58,7 +58,7 @@ class QRReader {
           .filter((device: MediaDeviceInfo) => {
             return device.kind === 'videoinput';
           });
-        return videoInputDevices[videoInputDevices.length - 1];
+        return videoInputDevices[0];
       });
   }
 
