@@ -23,12 +23,17 @@ class QRReader {
         this.intervalId = null;
         this.constraints = { audio: false, video: true };
         this.mediaStream = null;
-        this.iOS = ['iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) >= 0;
+        this.videoInputDevices = [];
+        this.facingMode = 'user';
         this.isMediaStreamAPISupported = navigator && navigator.mediaDevices && 'enumerateDevices' in navigator.mediaDevices;
+        this.facingMode = this.isMobileDevice() ? 'environment' : 'user';
         this.setConstraints();
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.setCanvasProperties(this.canvas);
+    }
+    isMobileDevice() {
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
     }
     setCanvasProperties(canvas) {
         canvas.width = window.innerWidth;
@@ -40,7 +45,7 @@ class QRReader {
             if (device)
                 this.constraints.video = {
                     deviceId: device.deviceId,
-                    facingMode: this.iOS ? 'environment' : undefined
+                    facingMode: this.facingMode
                 };
         });
     }
@@ -53,11 +58,11 @@ class QRReader {
         return navigator.mediaDevices
             .enumerateDevices()
             .then((devices) => {
-            const videoInputDevices = devices
+            this.videoInputDevices = devices
                 .filter((device) => {
                 return device.kind === 'videoinput';
             });
-            return videoInputDevices[videoInputDevices.length - 1];
+            return this.videoInputDevices[0];
         });
     }
     getFrame(video, ctx) {
@@ -104,6 +109,11 @@ class QRReader {
             }
             return this.asyncScan(video);
         });
+    }
+    stopAndSwitchCamera() {
+        this.stopCapture();
+        this.facingMode = (this.facingMode === 'environment') ? 'user' : 'environment';
+        this.setConstraints();
     }
     stopCapture() {
         if (this.intervalId)
