@@ -44,7 +44,7 @@ const videoElement = document.getElementById('video');
 // start Capture
 start() {
   qrCodeReader.startCapture(videoElement)
-    .then((decodedData: string) => {
+    .then(decodedData => {
       console.log(decodedData);
     })
     .catch(console.log);
