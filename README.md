@@ -11,7 +11,7 @@ Compliled size: 5kB.
 ## Methods
 
 ```javascript
-  getVideoInputDevices(): boolean
+  isMediaStreamAPISupported(): boolean
 ```
 
 ```javascript
