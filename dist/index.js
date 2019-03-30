@@ -19,13 +19,11 @@ var ErrorMessage;
 ;
 class QRReader {
     constructor() {
-        this.timout = 500;
+        this.captureInterval = 500;
         this.intervalId = null;
         this.constraints = { audio: false, video: true };
         this.mediaStream = null;
-        this.videoInputDevices = [];
         this.facingMode = 'user';
-        this.isMediaStreamAPISupported = navigator && navigator.mediaDevices && 'enumerateDevices' in navigator.mediaDevices;
         this.facingMode = this.isMobileDevice() ? 'environment' : 'user';
         this.setConstraints();
         this.canvas = document.createElement('canvas');
@@ -40,30 +38,14 @@ class QRReader {
         canvas.height = window.innerHeight;
     }
     setConstraints() {
-        this.getVideoInputDevice().
-            then(device => {
-            if (device)
-                this.constraints.video = {
-                    deviceId: device.deviceId,
-                    facingMode: this.facingMode
-                };
-        });
+        this.constraints.video = {
+            facingMode: this.facingMode
+        };
     }
     setVideoPlayback(video, stream) {
         video.setAttribute('playsinline', 'true');
         video.srcObject = stream;
         video.play();
-    }
-    getVideoInputDevice() {
-        return navigator.mediaDevices
-            .enumerateDevices()
-            .then((devices) => {
-            this.videoInputDevices = devices
-                .filter((device) => {
-                return device.kind === 'videoinput';
-            });
-            return this.videoInputDevices[0];
-        });
     }
     getFrame(video, ctx) {
         ctx.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
@@ -84,7 +66,7 @@ class QRReader {
                     this.stopCapture();
                     resolve(result);
                 }
-            }, this.timout);
+            }, this.captureInterval);
         });
     }
     catchError(error) {
@@ -94,11 +76,11 @@ class QRReader {
             console.error(ErrorMessage.default, error);
     }
     // PUBLIC
-    startCapture(video, timout) {
+    startCapture(video, captureInterval) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!video || !(video instanceof HTMLVideoElement))
                 return Promise.reject(ErrorMessage.InvalidVideo);
-            this.timout = timout || this.timout;
+            this.captureInterval = captureInterval || this.captureInterval;
             try {
                 this.mediaStream = yield navigator.mediaDevices.getUserMedia(this.constraints);
                 this.setVideoPlayback(video, this.mediaStream);
@@ -128,6 +110,19 @@ class QRReader {
                     track.stop();
                 });
         }
+    }
+    getVideoInputDevices() {
+        return navigator.mediaDevices
+            .enumerateDevices()
+            .then((devices) => {
+            return devices
+                .filter((device) => {
+                return device.kind === 'videoinput';
+            });
+        });
+    }
+    isMediaStreamAPISupported() {
+        return navigator && navigator.mediaDevices && 'enumerateDevices' in navigator.mediaDevices;
     }
 }
 exports.default = QRReader;
