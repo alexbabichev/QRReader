@@ -29,7 +29,8 @@
   "devDependencies": {
     "@types/node": "^11.11.6",
     "tslint": "^5.14.0",
-    "typescript": "^3.3.4000"
+    "typescript": "^3.3.4000",
+    "js-yaml": ">=3.13.1"
   },
   "dependencies": {
     "jsqr": "^1.2.0"
